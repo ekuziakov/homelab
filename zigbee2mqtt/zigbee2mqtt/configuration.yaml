@@ -1,0 +1,52 @@
+version: 5
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://mosquitto:1883
+serial:
+  port: /dev/ttyUSB0
+  baudrate: 115200
+  rtscts: false
+  adapter: ember
+advanced:
+  log_level: info
+  channel: 11
+  network_key:
+    - 204
+    - 114
+    - 95
+    - 180
+    - 249
+    - 179
+    - 173
+    - 186
+    - 110
+    - 65
+    - 98
+    - 130
+    - 112
+    - 126
+    - 167
+    - 239
+  pan_id: 32733
+  ext_pan_id:
+    - 196
+    - 77
+    - 179
+    - 96
+    - 125
+    - 196
+    - 71
+    - 132
+  enable_external_js: false
+frontend:
+  enabled: true
+  port: 8080
+homeassistant:
+  enabled: false
+devices:
+  "0x54ef441000ee7f8f":
+    friendly_name: "0x54ef441000ee7f8f"
+  "0x54ef441000c65042":
+    friendly_name: "0x54ef441000c65042"
+  "0x54ef4410011ea73c":
+    friendly_name: "0x54ef4410011ea73c"
