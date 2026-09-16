@@ -22,3 +22,9 @@ services:
       - mosquitto
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
+
+
+networks:
+  default:
+    name: homelab
+    external: true

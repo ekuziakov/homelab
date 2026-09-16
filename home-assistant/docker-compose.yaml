@@ -1,0 +1,15 @@
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    restart: unless-stopped
+    volumes:
+      - ../../data/homeassistant:/config
+    ports:
+      - "8123:8123"
+    environment:
+      - TZ=Europe/Moscow
+
+networks:
+  default:
+    name: homelab
+    external: true
