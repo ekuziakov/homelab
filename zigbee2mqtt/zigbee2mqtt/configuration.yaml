@@ -44,9 +44,11 @@ frontend:
 homeassistant:
   enabled: true
 devices:
-  '0x54ef441000ee7f8f':
-    friendly_name: bedroom_temperature
-  '0x54ef441000c65042':
+  "0x54ef441000ee7f8f":
+    friendly_name: bathroom_temperature
+  "0x54ef441000c65042":
     friendly_name: bedroom_light
-  '0x54ef4410011ea73c':
+  "0x54ef4410011ea73c":
     friendly_name: bedroom_plug
+  "0xa4c138599adaee8f":
+    friendly_name: bedroom_temperature
