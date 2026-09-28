@@ -3,7 +3,7 @@ services:
     image: ghcr.io/home-assistant/home-assistant:stable
     restart: unless-stopped
     volumes:
-      - ../../data/homeassistant:/config
+      - ./config:/config
     ports:
       - "8123:8123"
     environment:
