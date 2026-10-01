@@ -1,0 +1,21 @@
+#{
+#    # This tells Caddy to use its internal CA for local domains
+#    local_certs
+#}
+
+(cloudflare) {
+    tls {
+        dns cloudflare {env.CF_API_TOKEN}
+        resolvers 1.1.1.1
+    }
+}
+
+homeassistant.home.hexmelt.com {
+    import cloudflare
+    reverse_proxy home-assistant-homeassistant-1:8123
+}
+
+hermes.home.hexmelt.com {
+    import cloudflare
+    reverse_proxy hermes-hermes-1:9119
+}

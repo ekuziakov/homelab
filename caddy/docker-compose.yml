@@ -1,0 +1,20 @@
+services:
+  caddy:
+    build: .
+    restart: on-failure
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # Needed for HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./data:/data
+      - ./config:/config
+    env_file:
+      - .env
+
+
+networks:
+  default:
+    name: homelab
+    external: true

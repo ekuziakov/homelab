@@ -7,6 +7,15 @@ services:
     ports:
       - "9119:9119"   # dashboard
     environment:
+      HERMES_DASHBOARD: 1
+      HERMES_TUI: 1
+      TZ: Europe/Moscow
       HTTP_PROXY: http://host.docker.internal:7897
       HTTPS_PROXY: http://host.docker.internal:7897
     command: gateway run
+
+
+networks:
+  default:
+    name: homelab
+    external: true
