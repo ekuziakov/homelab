@@ -6,11 +6,7 @@ services:
       - ./data:/opt/data
     ports:
       - "9119:9119"   # dashboard
-    env_file:
-      - .env
     environment:
       HTTP_PROXY: http://host.docker.internal:7897
       HTTPS_PROXY: http://host.docker.internal:7897
-      HERMES_DASHBOARD: 1
-      HERMES_TUI: 1
     command: gateway run

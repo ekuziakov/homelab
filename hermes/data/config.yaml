@@ -1139,6 +1139,26 @@ skills:
 # =============================================================================
 # Agent Behavior
 # =============================================================================
+  disabled:
+    - airtable
+    - ascii-video
+    - baoyu-infographic
+    - box
+    - claude-code
+    - claude-design
+    - codex
+    - computer-use
+    - dogfood
+    - gif-search
+    - himalaya
+    - llm-wiki
+    - manim-video
+    - notion
+    - obsidian
+    - opencode
+    - p5js
+    - songsee
+    - teams-meeting-pipeline
 agent:
   # Maximum tool-calling iterations per conversation (default: 500)
   # Higher = more room for complex tasks, but costs more tokens
