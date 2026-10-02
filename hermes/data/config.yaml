@@ -1439,8 +1439,8 @@ gateway:
 #   google_chat:      hermes-google_chat      (same as telegram)
 #
 platform_toolsets:
-  cli: [browser, clarify, code_execution, connections, cronjob, delegation, file, image_gen, memory, session_search, skills, terminal, todo, tts, vision, web]
-  telegram: [browser, clarify, code_execution, connections, cronjob, delegation, file, image_gen, memory, session_search, skills, terminal, todo, tts, vision, web]
+  cli: [browser, clarify, code_execution, connections, cronjob, delegation, file, homeassistant, image_gen, kanban, memory, session_search, skills, terminal, todo, tts, vision, web]
+  telegram: [browser, clarify, code_execution, connections, cronjob, delegation, file, homeassistant, image_gen, kanban, memory, session_search, skills, terminal, todo, tts, vision, web]
   discord: [hermes-discord]
   whatsapp: [hermes-whatsapp]
   slack: [hermes-slack]
@@ -2152,6 +2152,7 @@ display:
 #     shared-metrics directory resets it.
 # See docs/observability/relay-shared-metrics.md (Appendix A) for the full
 # consent, identity, retention, and deletion decisions.
+  tool_progress: "verbose"
 telemetry:
   shared_metrics:
     enabled: false
@@ -2415,3 +2416,8 @@ known_builtin_toolsets:
     - web
     - x_search
     - yuanbao
+mcp_servers:
+  Raindrop:
+    headers:
+      Authorization: Bearer ${MCP_RAINDROP_API_KEY}
+    url: https://api.raindrop.io/rest/v2/ai/mcp
