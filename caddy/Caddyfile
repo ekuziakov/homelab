@@ -24,3 +24,8 @@ actual.home.hexmelt.com {
     import cloudflare
     reverse_proxy actual-budget-actual-1:5006
 }
+
+sparkyfitness.home.hexmelt.com {
+    import cloudflare
+    reverse_proxy sparkyfitness-sparkyfitness-frontend-1:80
+}

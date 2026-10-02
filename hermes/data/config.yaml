@@ -2421,3 +2421,7 @@ mcp_servers:
     headers:
       Authorization: Bearer ${MCP_RAINDROP_API_KEY}
     url: https://api.raindrop.io/rest/v2/ai/mcp
+  SparkyFitness:
+    headers:
+      Authorization: Bearer ${MCP_SPARKYFITNESS_API_KEY}
+    url: http://sparkyfitness-sparkyfitness-frontend-1:80/mcp

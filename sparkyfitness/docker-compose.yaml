@@ -1,0 +1,60 @@
+services:
+  sparkyfitness-db:
+    image: postgres:18.3-alpine
+    restart: unless-stopped
+    volumes:
+      - ./postgresql:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: sparkyfitness_db
+      POSTGRES_USER: sparky
+      POSTGRES_PASSWORD: ${SPARKY_FITNESS_DB_PASSWORD}
+      TZ: Europe/Moscow
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  sparkyfitness-server:
+    image: codewithcj/sparkyfitness_server:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      SPARKY_FITNESS_DB_HOST: sparkyfitness-db
+      SPARKY_FITNESS_DB_PORT: 5432
+      SPARKY_FITNESS_DB_NAME: sparkyfitness_db
+      SPARKY_FITNESS_DB_USER: sparky
+      SPARKY_FITNESS_DB_PASSWORD: ${SPARKY_FITNESS_DB_PASSWORD}
+      SPARKY_FITNESS_API_ENCRYPTION_KEY: ${SPARKY_FITNESS_API_ENCRYPTION_KEY}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      SPARKY_FITNESS_FRONTEND_URL: ${SPARKY_FITNESS_FRONTEND_URL}
+      SPARKY_FITNESS_SERVER_PORT: 3010
+      NODE_ENV: production
+      TZ: Europe/Moscow
+    volumes:
+      - ./backup:/app/SparkyFitnessServer/backup
+      - ./uploads:/app/SparkyFitnessServer/uploads
+    depends_on:
+      sparkyfitness-db:
+        condition: service_healthy
+
+  sparkyfitness-frontend:
+    image: codewithcj/sparkyfitness:latest
+    restart: unless-stopped
+    ports:
+      - "3004:80"
+    environment:
+      SPARKY_FITNESS_FRONTEND_URL: ${SPARKY_FITNESS_FRONTEND_URL}
+      SPARKY_FITNESS_SERVER_HOST: sparkyfitness-server
+      SPARKY_FITNESS_SERVER_PORT: 3010
+      NGINX_LISTEN_PORT: 80
+      TZ: Europe/Moscow
+    depends_on:
+      - sparkyfitness-server
+
+networks:
+  default:
+    name: homelab
+    external: true
