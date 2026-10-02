@@ -29,3 +29,8 @@ sparkyfitness.home.hexmelt.com {
     import cloudflare
     reverse_proxy sparkyfitness-sparkyfitness-frontend-1:80
 }
+
+floppy.home.hexmelt.com {
+    import cloudflare
+    reverse_proxy floppy-floppy-1:8000
+}

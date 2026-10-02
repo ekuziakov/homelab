@@ -12,7 +12,7 @@ services:
       TZ: Europe/Moscow
       HTTP_PROXY: http://host.docker.internal:7897
       HTTPS_PROXY: http://host.docker.internal:7897
-      NO_PROXY: localhost,127.0.0.1,::1,sparkyfitness-sparkyfitness-frontend-1
+      NO_PROXY: localhost,127.0.0.1,::1,sparkyfitness-sparkyfitness-frontend-1,floppy-floppy-mcp-1
     command: gateway run
 
 
