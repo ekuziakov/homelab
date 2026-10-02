@@ -8,6 +8,7 @@ services:
       - "9119:9119"   # dashboard
     environment:
       HERMES_DASHBOARD: 1
+      HERMES_DASHBOARD_PUBLIC_URL: https://hermes.home.hexmelt.com
       HERMES_TUI: 1
       TZ: Europe/Moscow
       HTTP_PROXY: http://host.docker.internal:7897
