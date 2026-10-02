@@ -1,0 +1,16 @@
+services:
+  actual:
+    image: actualbudget/actual-server:latest
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    ports:
+      - "5006:5006"
+    environment:
+      - TZ=Europe/Moscow
+
+
+networks:
+  default:
+    name: homelab
+    external: true

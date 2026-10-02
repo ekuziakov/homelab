@@ -19,3 +19,8 @@ hermes.home.hexmelt.com {
     import cloudflare
     reverse_proxy hermes-hermes-1:9119
 }
+
+actual.home.hexmelt.com {
+    import cloudflare
+    reverse_proxy actual-budget-actual-1:5006
+}
