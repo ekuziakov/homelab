@@ -34,3 +34,8 @@ floppy.home.hexmelt.com {
     import cloudflare
     reverse_proxy floppy-floppy-1:8000
 }
+
+immich.home.hexmelt.com {
+    import cloudflare
+    reverse_proxy immich-immich-server-1:2283
+}
