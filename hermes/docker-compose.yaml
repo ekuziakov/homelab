@@ -4,6 +4,10 @@ services:
     restart: unless-stopped
     volumes:
       - ./data:/opt/data
+      - type: bind
+        source: /Volumes/SSD1/wiki
+        target: /wiki
+        read_only: false
     ports:
       - "9119:9119"   # dashboard
     environment:

@@ -7,7 +7,7 @@
 # Schema version of this file. The installers copy it to seed config.yaml, and
 # `hermes update` uses it to know which one-time migrations the file already
 # has. Hermes manages it: do not copy it into another config.
-_config_version: 46
+_config_version: 52
 
 # =============================================================================
 # Database Configuration
@@ -54,6 +54,9 @@ plugins:
 # =============================================================================
 # Model Configuration
 # =============================================================================
+  enabled:
+    - homeassistant
+  disabled: []
 model:
   # Default model to use (can be overridden with --model flag)
   # Both "default" and "model" work as the key name here.
@@ -572,32 +575,6 @@ browser:
   # Let an authenticated browser extension register as the controller for an
   # existing Hermes session. Disabled by default. Local API registration also
   # requires the API server bearer key to be configured.
-  extension_control:
-    enabled: false
-
-  # Maximum characters of snapshot content before truncate-and-store.
-  # Increase for long pages (for example, documentation or financial reports),
-  # or decrease to reduce context usage. Minimum: 1000; default: 15000
-  # (same per-page budget as web_extract).
-  # snapshot_threshold: 15000
-
-  # JavaScript evaluation guardrails (both default false). restrict_evaluate
-  # opts into a denylist that blocks sensitive primitives (cookies, storage,
-  # clipboard, network, form values) in browser_console(expression=...) — use
-  # it when the agent drives a logged-in profile. allow_unsafe_evaluate is the
-  # legacy override that switches the denylist back off even when restrict is on.
-  # restrict_evaluate: false
-  # allow_unsafe_evaluate: false
-
-# =============================================================================
-# Tool Loop Guardrails
-# =============================================================================
-# Soft warnings are enabled by default. They append guidance to repeated failed
-# or non-progressing tool results but still let the tool execute. Hard stops stay
-# opt-in for interactive CLI/TUI/Desktop/ACP sessions, but default on for unattended
-# gateway/cron sessions where nobody is present to interrupt a model that
-# ignores loop warnings.
-  backend: browser-use
 tool_loop_guardrails:
   warnings_enabled: true
   hard_stop_enabled: false
@@ -682,10 +659,6 @@ compression:
   # bounding large-window sessions while lower proportional triggers still win
   # whenever they fall below the cap. The cap survives model switches and fallbacks.
   # Set null to restore ratio-only behavior.
-  threshold_tokens: 256000
-
-  # Existing Codex gpt-5.5 behavior: raise Hermes' compaction trigger to 85%
-  # for the ChatGPT Codex OAuth route. Set false to opt back down to threshold.
   codex_gpt55_autoraise: true
 
   # Fraction of the threshold to preserve as recent tail (default: 0.20 = 20%)
@@ -1151,7 +1124,6 @@ skills:
     - dogfood
     - gif-search
     - himalaya
-    - llm-wiki
     - manim-video
     - notion
     - obsidian
@@ -2357,6 +2329,10 @@ known_plugin_toolsets:
   telegram:
     - a2a
     - spotify
+  acp:
+    - homeassistant
+  webhook:
+    - homeassistant
 known_builtin_toolsets:
   cli:
     - browser
@@ -2430,3 +2406,36 @@ mcp_servers:
   Todoist:
     url: https://ai.todoist.net/mcp
     auth: oauth
+onboarding:
+  seen:
+    busy_input_prompt: true
+moa:
+  presets:
+    default:
+      reference_models:
+        - provider: openai-codex
+          model: gpt-5.5
+          enabled: true
+        - provider: openrouter
+          model: deepseek/deepseek-v4-pro
+          enabled: false
+      aggregator:
+        provider: openai-codex
+        model: gpt-6.1-sol
+      degraded_reference_policy: loud
+      fanout: user_turn
+  reference_models:
+    - provider: openai-codex
+      model: gpt-5.5
+      enabled: true
+    - provider: openrouter
+      model: deepseek/deepseek-v4-pro
+      enabled: false
+  aggregator:
+    provider: openai-codex
+    model: gpt-6.1-sol
+  degraded_reference_policy: loud
+  fanout: user_turn
+  enabled: true
+_left_core_scoped:
+  - homeassistant
