@@ -1124,6 +1124,7 @@ skills:
     - dogfood
     - gif-search
     - himalaya
+    - llm-wiki
     - manim-video
     - notion
     - obsidian
@@ -2135,6 +2136,7 @@ telemetry:
 # =============================================================================
 # Login Policy (credentials themselves live in auth.json / .env)
 # =============================================================================
+    offer_version: 2
 auth:
   # Borrow and refresh the Codex CLI (~/.codex/auth.json) and Claude Code logins when Hermes has
   # no usable login of its own. Their refresh tokens are single-use, so two programs on one login
@@ -2438,4 +2440,6 @@ moa:
   fanout: user_turn
   enabled: true
 _left_core_scoped:
+  - homeassistant
+_left_core_installed:
   - homeassistant

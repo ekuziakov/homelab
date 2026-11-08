@@ -5,8 +5,8 @@ services:
     volumes:
       - ./data:/opt/data
       - type: bind
-        source: /Volumes/SSD1/wiki
-        target: /wiki
+        source: /Volumes/SSD1/homelab
+        target: /homelab
         read_only: false
     ports:
       - "9119:9119"   # dashboard
