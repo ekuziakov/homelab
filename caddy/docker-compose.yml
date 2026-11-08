@@ -1,7 +1,7 @@
 services:
   caddy:
     build: .
-    restart: on-failure
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
