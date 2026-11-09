@@ -1,48 +1,29 @@
 # Zerobyte
 
-Restic backup UI at http://localhost:4096. Requires the external `homelab`
-network and an existing Hindsight volume. Run commands on the Mac.
+Backup UI: `http://localhost:4096` (local access only).
 
-## Setup
+## Run
 
-Keep the existing `.env`. On a fresh clone, copy `.env.example` to `.env`,
-set `APP_SECRET` using `openssl rand -hex 32`, and run `chmod 600 .env`.
-Set `HINDSIGHT_VOLUME_NAME` if the volume has a different name.
-
-Verify SSD1 is mounted before creating the repository directory:
+Configure `.env` using `.env.example`; keep `APP_SECRET` safe.
+Requires `homelab`, `zerobyte_data`, and the Hindsight volume below.
+Verify SSD1 is mounted and `/Volumes/SSD1/backups/zerobyte` exists.
+From this directory:
 
 ```bash
-cd /Volumes/SSD1/homelab/zerobyte
-diskutil info /Volumes/SSD1
-# Continue only after confirming the correct disk.
-mkdir -p /Volumes/SSD1/backups/zerobyte
-docker volume inspect hindsight_hindsight-data
-docker compose config --quiet
 docker compose up -d
 ```
 
-Create an admin account in the UI, then configure:
+Configure sources, repositories, jobs, and retention in the UI.
 
-| Type | Container path |
-| --- | --- |
-| Directory source | `/sources/homelab` |
-| Directory source | `/sources/hindsight` |
-| Local repository | `/repositories/homelab` |
+## Storage
 
-Create jobs and retention rules in the UI; Compose does not configure them.
-Store repository credentials separately from SSD1.
+- `zerobyte_data` → `/var/lib/zerobyte`: settings and application state.
+- `/Volumes/SSD1/homelab` → `/sources/homelab`: read-only repository files.
+- `hindsight_hindsight-data` → `/sources/hindsight`: read-only Hindsight data;
+  override its volume name with `HINDSIGHT_VOLUME_NAME` in `.env` if needed.
+- `/Volumes/SSD1/backups/zerobyte` → `/repositories`: backup repositories.
 
-## Backup safety
-
-- Exclude `/sources/homelab/zerobyte/data`; back up Zerobyte state separately
-  with a consistent copy. Its settings are otherwise not protected.
-- Database dumps and container shutdown are not configured. Do not schedule raw
-  backups of running PostgreSQL or SQLite databases without consistency handling.
-  Keep Immich database and library backups consistent with each other.
-- Sources are read-only. Restore to a separate writable directory or volume
-  and test recovery. External photos are not mounted.
-- The repository is on SSD1 at `/Volumes/SSD1/backups/zerobyte`. Run the existing
-  SSD1-to-Backup01 rsync only after backup and maintenance jobs finish; verify
-  both disks before using `--delete`.
-
-Runtime, job execution, and restore verification must be performed on the Mac.
+Other service volumes and external photos are not mounted. Arrange consistent
+database dumps or downtime before backing up Hindsight. Back up Zerobyte state
+separately and copy repositories to Backup01 only when backup/maintenance jobs
+have finished.
