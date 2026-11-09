@@ -2,20 +2,20 @@ services:
   floppy:
     image: ghcr.io/dannyvfilms/floppy:latest
     restart: unless-stopped
-    depends_on:
-      floppy-redis:
-        condition: service_healthy
     environment:
-      TZ: Europe/Moscow
-      HTTP_PROXY: http://host.docker.internal:7897
-      HTTPS_PROXY: http://host.docker.internal:7897
-      SECRET: ${SECRET}
-      URLS: https://floppy.home.hexmelt.com
-      REDIS_URL: redis://floppy-redis:6379
+      TZ: "Europe/Moscow"
+      HTTP_PROXY: "http://host.docker.internal:7897"
+      HTTPS_PROXY: "http://host.docker.internal:7897"
+      SECRET: "${SECRET}"
+      URLS: "https://floppy.home.hexmelt.com"
+      REDIS_URL: "redis://floppy-redis:6379"
       DEMO_ACCOUNT_ENABLED: "False"
       DEBUG: "False"
-      REGISTRATION: ${REGISTRATION}
-      TMDB_API: ${TMDB_API}
+      REGISTRATION: "${REGISTRATION}"
+      TMDB_API: "${TMDB_API}"
+    ports:
+      - "8000:8000"
+
     volumes:
       - type: volume
         source: floppy-db
@@ -27,18 +27,12 @@ services:
         target: /floppy/backups
         volume:
           nocopy: true
-    ports:
-      - "8000:8000"
-
+    depends_on:
+      floppy-redis:
+        condition: service_healthy
   floppy-mcp:
     image: ghcr.io/dannyvfilms/floppy:latest
     restart: unless-stopped
-    depends_on:
-      floppy:
-        condition: service_healthy
-    environment:
-      FLOPPY_URL: http://floppy:8000
-      FLOPPY_TOKEN: ${FLOPPY_TOKEN}
     command:
       - python
       - -c
@@ -52,8 +46,18 @@ services:
           enable_dns_rebinding_protection=False,
         )
         mcp.run(transport="streamable-http")
+    environment:
+      FLOPPY_URL: "http://floppy:8000"
+      FLOPPY_TOKEN: "${FLOPPY_TOKEN}"
+    depends_on:
+      floppy:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8000), timeout=5).close()"]
+      test:
+        - "CMD"
+        - "python"
+        - "-c"
+        - "import socket; socket.create_connection(('127.0.0.1', 8000), timeout=5).close()"
       interval: 30s
       timeout: 10s
       start_period: 10s
@@ -62,12 +66,16 @@ services:
   floppy-redis:
     image: redis:8-alpine
     restart: unless-stopped
-    command: ["redis-server", "--appendonly", "yes", "--save", "", "--maxmemory", "256mb", "--maxmemory-policy", "volatile-lru"]
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 10
+    command:
+      - "redis-server"
+      - "--appendonly"
+      - "yes"
+      - "--save"
+      - ""
+      - "--maxmemory"
+      - "256mb"
+      - "--maxmemory-policy"
+      - "volatile-lru"
     volumes:
       - type: volume
         source: floppy-redis
@@ -75,18 +83,27 @@ services:
         volume:
           nocopy: true
 
+    healthcheck:
+      test:
+        - "CMD"
+        - "redis-cli"
+        - "ping"
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  floppy-db:
+    name: floppy_db
+    external: true
+  floppy-backups:
+    name: floppy_backups
+    external: true
+  floppy-redis:
+    name: floppy_redis
+    external: true
+
 networks:
   default:
     name: homelab
     external: true
-
-volumes:
-  floppy-db:
-    external: true
-    name: floppy_db
-  floppy-backups:
-    external: true
-    name: floppy_backups
-  floppy-redis:
-    external: true
-    name: floppy_redis

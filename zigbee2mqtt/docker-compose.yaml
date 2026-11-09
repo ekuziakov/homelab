@@ -2,19 +2,30 @@ services:
   mosquitto:
     image: eclipse-mosquitto:2.0
     restart: unless-stopped
+    ports:
+      - "1883:1883"
+
     volumes:
-      - ./mosquitto/config:/mosquitto/config
+      - type: bind
+        source: ./mosquitto/config
+        target: /mosquitto/config
+        bind:
+          create_host_path: true
       - type: volume
         source: mosquitto-data
         target: /mosquitto/data
         volume:
           nocopy: true
-    ports:
-      - "1883:1883"
-
   zigbee2mqtt:
     image: ghcr.io/koenkk/zigbee2mqtt
     restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+    ports:
+      - "8080:8080"
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+
     volumes:
       - type: volume
         source: zigbee2mqtt-data
@@ -27,25 +38,19 @@ services:
         read_only: false
         bind:
           create_host_path: false
-    ports:
-      - 8080:8080
-    environment:
-      - TZ=Europe/Moscow
     depends_on:
-      - mosquitto
-    devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
+      mosquitto:
+        condition: service_started
 
+volumes:
+  mosquitto-data:
+    name: mosquitto_data
+    external: true
+  zigbee2mqtt-data:
+    name: zigbee2mqtt_data
+    external: true
 
 networks:
   default:
     name: homelab
     external: true
-
-volumes:
-  mosquitto-data:
-    external: true
-    name: mosquitto_data
-  zigbee2mqtt-data:
-    external: true
-    name: zigbee2mqtt_data

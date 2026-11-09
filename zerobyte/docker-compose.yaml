@@ -2,12 +2,12 @@ services:
   zerobyte:
     image: ghcr.io/nicotsx/zerobyte:v0.44
     restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+      BASE_URL: "http://localhost:4096"
+      APP_SECRET: "${APP_SECRET:?Set APP_SECRET in zerobyte/.env}"
     ports:
       - "127.0.0.1:4096:4096"
-    environment:
-      TZ: Europe/Moscow
-      BASE_URL: http://localhost:4096
-      APP_SECRET: ${APP_SECRET:?Set APP_SECRET in zerobyte/.env}
     volumes:
       - type: volume
         source: zerobyte-data
@@ -34,11 +34,12 @@ services:
 
 volumes:
   zerobyte-data:
-    external: true
     name: zerobyte_data
-  hindsight-data:
     external: true
+  hindsight-data:
     name: ${HINDSIGHT_VOLUME_NAME:-hindsight_hindsight-data}
+
+    external: true
 
 networks:
   default:

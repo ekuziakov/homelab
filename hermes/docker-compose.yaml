@@ -2,6 +2,19 @@ services:
   hermes:
     image: nousresearch/hermes-agent:latest
     restart: unless-stopped
+    command: gateway run
+
+    environment:
+      HERMES_DASHBOARD: "1"
+      HERMES_DASHBOARD_PUBLIC_URL: "https://hermes.home.hexmelt.com"
+      HERMES_TUI: "1"
+      TZ: "Europe/Moscow"
+      HTTP_PROXY: "http://host.docker.internal:7897"
+      HTTPS_PROXY: "http://host.docker.internal:7897"
+      NO_PROXY: "localhost,127.0.0.1,::1,sparkyfitness-sparkyfitness-frontend-1,floppy-floppy-mcp-1,hindsight-hindsight-1"
+      HERMES_WRITE_SAFE_ROOT: "/opt/data:/mounts/homelab"
+    ports:
+      - "9119:9119"   # dashboard
     volumes:
       - type: volume
         source: hermes-data
@@ -24,26 +37,13 @@ services:
         source: /Volumes/SSD1/homelab
         target: /mounts/homelab
         read_only: false
-    ports:
-      - "9119:9119"   # dashboard
-    environment:
-      HERMES_DASHBOARD: 1
-      HERMES_DASHBOARD_PUBLIC_URL: https://hermes.home.hexmelt.com
-      HERMES_TUI: 1
-      TZ: Europe/Moscow
-      HTTP_PROXY: http://host.docker.internal:7897
-      HTTPS_PROXY: http://host.docker.internal:7897
-      NO_PROXY: localhost,127.0.0.1,::1,sparkyfitness-sparkyfitness-frontend-1,floppy-floppy-mcp-1,hindsight-hindsight-1
-      HERMES_WRITE_SAFE_ROOT: /opt/data:/mounts/homelab
-    command: gateway run
 
+volumes:
+  hermes-data:
+    name: hermes_data
+    external: true
 
 networks:
   default:
     name: homelab
     external: true
-
-volumes:
-  hermes-data:
-    external: true
-    name: hermes_data

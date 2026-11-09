@@ -2,29 +2,32 @@ services:
   hindsight:
     image: ghcr.io/vectorize-io/hindsight:${HINDSIGHT_VERSION:-latest}
     restart: unless-stopped
-    shm_size: 1gb
-    stop_grace_period: 75s
-    volumes:
-      # Named volume avoids UID 1000 bind-mount permission issues on macOS.
-      - hindsight-data:/home/hindsight/.pg0
+    environment:
+      TZ: "Europe/Moscow"
+      HTTP_PROXY: "http://host.docker.internal:7897"
+      HTTPS_PROXY: "http://host.docker.internal:7897"
+      NO_PROXY: "localhost,127.0.0.1,::1,hindsight,host.docker.internal"
+      HINDSIGHT_API_WORKER_ID: "hindsight-homelab"
+      HINDSIGHT_API_LLM_PROVIDER: "${HINDSIGHT_API_LLM_PROVIDER:-chatgpt}"
+      # Empty model lets Hindsight select the provider's default.
+      HINDSIGHT_API_LLM_MODEL: "${HINDSIGHT_API_LLM_MODEL:-}"
+      HINDSIGHT_API_LLM_API_KEY: "${HINDSIGHT_API_LLM_API_KEY:-}"
+      HINDSIGHT_API_LLM_CHATGPT_HOME: "/home/hindsight/.pg0/chatgpt"
+      HINDSIGHT_API_TENANT_EXTENSION: "hindsight_api.extensions.builtin.tenant:ApiKeyTenantExtension"
+      HINDSIGHT_API_TENANT_API_KEY: "${HINDSIGHT_API_KEY:?Set HINDSIGHT_API_KEY in hindsight/.env}"
+      HINDSIGHT_CP_DATAPLANE_API_URL: "http://127.0.0.1:8888"
+      HINDSIGHT_CP_DATAPLANE_API_KEY: "${HINDSIGHT_API_KEY:?Set HINDSIGHT_API_KEY in hindsight/.env}"
     ports:
       - "127.0.0.1:8888:8888"   # API; Hermes uses hindsight:8888 over homelab
       - "127.0.0.1:9999:9999"   # web UI (no public reverse proxy)
-    environment:
-      TZ: Europe/Moscow
-      HTTP_PROXY: http://host.docker.internal:7897
-      HTTPS_PROXY: http://host.docker.internal:7897
-      NO_PROXY: localhost,127.0.0.1,::1,hindsight,host.docker.internal
-      HINDSIGHT_API_WORKER_ID: hindsight-homelab
-      HINDSIGHT_API_LLM_PROVIDER: ${HINDSIGHT_API_LLM_PROVIDER:-chatgpt}
-      # Empty model lets Hindsight select the provider's default.
-      HINDSIGHT_API_LLM_MODEL: ${HINDSIGHT_API_LLM_MODEL:-}
-      HINDSIGHT_API_LLM_API_KEY: ${HINDSIGHT_API_LLM_API_KEY:-}
-      HINDSIGHT_API_LLM_CHATGPT_HOME: /home/hindsight/.pg0/chatgpt
-      HINDSIGHT_API_TENANT_EXTENSION: hindsight_api.extensions.builtin.tenant:ApiKeyTenantExtension
-      HINDSIGHT_API_TENANT_API_KEY: ${HINDSIGHT_API_KEY:?Set HINDSIGHT_API_KEY in hindsight/.env}
-      HINDSIGHT_CP_DATAPLANE_API_URL: http://127.0.0.1:8888
-      HINDSIGHT_CP_DATAPLANE_API_KEY: ${HINDSIGHT_API_KEY:?Set HINDSIGHT_API_KEY in hindsight/.env}
+    volumes:
+      # Named volume avoids UID 1000 bind-mount permission issues on macOS.
+      - type: volume
+        source: hindsight-data
+        target: /home/hindsight/.pg0
+        volume: {}
+    shm_size: 1gb
+    stop_grace_period: 75s
     healthcheck:
       test:
         - CMD
@@ -47,30 +50,42 @@ services:
   # Explicitly selected one-off service; never starts with normal `up -d`.
   hindsight-login:
     image: ghcr.io/vectorize-io/hindsight:${HINDSIGHT_VERSION:-latest}
-    profiles: [auth]
+    profiles:
+      - auth
     restart: "no"
     init: true
-    entrypoint: ["python", "/app/chatgpt-login.py"]
+    entrypoint:
+      - "python"
+      - "/app/chatgpt-login.py"
     command: []
-    volumes:
-      - hindsight-data:/home/hindsight/.pg0
-      - ./login.py:/app/chatgpt-login.py:ro
+    environment:
+      TZ: "Europe/Moscow"
+      HTTP_PROXY: "http://host.docker.internal:7897"
+      HTTPS_PROXY: "http://host.docker.internal:7897"
+      NO_PROXY: "localhost,127.0.0.1,::1,host.docker.internal"
+      HINDSIGHT_API_LLM_CHATGPT_HOME: "/home/hindsight/.pg0/chatgpt"
+
     ports:
       # CLI listens on container loopback :1455; the relay accepts on :1456.
       - "127.0.0.1:1455:1456"
-    environment:
-      TZ: Europe/Moscow
-      HTTP_PROXY: http://host.docker.internal:7897
-      HTTPS_PROXY: http://host.docker.internal:7897
-      NO_PROXY: localhost,127.0.0.1,::1,host.docker.internal
-      HINDSIGHT_API_LLM_CHATGPT_HOME: /home/hindsight/.pg0/chatgpt
+    volumes:
+      - type: volume
+        source: hindsight-data
+        target: /home/hindsight/.pg0
+        volume: {}
+      - type: bind
+        source: ./login.py
+        target: /app/chatgpt-login.py
+        read_only: true
+        bind:
+          create_host_path: true
+
+volumes:
+  hindsight-data:
+    name: hindsight_hindsight-data
+    external: true
 
 networks:
   default:
     name: homelab
     external: true
-
-volumes:
-  hindsight-data:
-    external: true
-    name: hindsight_hindsight-data

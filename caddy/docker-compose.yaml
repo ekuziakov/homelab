@@ -2,12 +2,19 @@ services:
   caddy:
     build: .
     restart: unless-stopped
+    env_file:
+      - .env
+
     ports:
       - "80:80"
       - "443:443"
       - "443:443/udp" # Needed for HTTP/3
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
+      - type: bind
+        source: ./Caddyfile
+        target: /etc/caddy/Caddyfile
+        bind:
+          create_host_path: true
       - type: volume
         source: caddy-data
         target: /data
@@ -18,19 +25,16 @@ services:
         target: /config
         volume:
           nocopy: true
-    env_file:
-      - .env
 
+volumes:
+  caddy-data:
+    name: caddy_data
+    external: true
+  caddy-config:
+    name: caddy_config
+    external: true
 
 networks:
   default:
     name: homelab
     external: true
-
-volumes:
-  caddy-data:
-    external: true
-    name: caddy_data
-  caddy-config:
-    external: true
-    name: caddy_config
