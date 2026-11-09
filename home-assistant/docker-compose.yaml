@@ -3,7 +3,11 @@ services:
     image: ghcr.io/home-assistant/home-assistant:stable
     restart: unless-stopped
     volumes:
-      - ./config:/config
+      - type: volume
+        source: home-assistant-config
+        target: /config
+        volume:
+          nocopy: true
     ports:
       - "8123:8123"
     environment:
@@ -14,3 +18,8 @@ networks:
   default:
     name: homelab
     external: true
+
+volumes:
+  home-assistant-config:
+    external: true
+    name: home_assistant_config

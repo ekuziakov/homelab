@@ -17,8 +17,16 @@ services:
       REGISTRATION: ${REGISTRATION}
       TMDB_API: ${TMDB_API}
     volumes:
-      - ./db:/floppy/db
-      - ./backups:/floppy/backups
+      - type: volume
+        source: floppy-db
+        target: /floppy/db
+        volume:
+          nocopy: true
+      - type: volume
+        source: floppy-backups
+        target: /floppy/backups
+        volume:
+          nocopy: true
     ports:
       - "8000:8000"
 
@@ -61,9 +69,24 @@ services:
       timeout: 3s
       retries: 10
     volumes:
-      - ./redis:/data
+      - type: volume
+        source: floppy-redis
+        target: /data
+        volume:
+          nocopy: true
 
 networks:
   default:
     name: homelab
     external: true
+
+volumes:
+  floppy-db:
+    external: true
+    name: floppy_db
+  floppy-backups:
+    external: true
+    name: floppy_backups
+  floppy-redis:
+    external: true
+    name: floppy_redis

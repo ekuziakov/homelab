@@ -3,7 +3,11 @@ services:
     image: postgres:18.3-alpine
     restart: unless-stopped
     volumes:
-      - ./postgresql:/var/lib/postgresql
+      - type: volume
+        source: sparkyfitness-postgresql
+        target: /var/lib/postgresql
+        volume:
+          nocopy: true
     environment:
       POSTGRES_DB: sparkyfitness_db
       POSTGRES_USER: sparky
@@ -34,8 +38,16 @@ services:
       NODE_ENV: production
       TZ: Europe/Moscow
     volumes:
-      - ./backup:/app/SparkyFitnessServer/backup
-      - ./uploads:/app/SparkyFitnessServer/uploads
+      - type: volume
+        source: sparkyfitness-backup
+        target: /app/SparkyFitnessServer/backup
+        volume:
+          nocopy: true
+      - type: volume
+        source: sparkyfitness-uploads
+        target: /app/SparkyFitnessServer/uploads
+        volume:
+          nocopy: true
     depends_on:
       sparkyfitness-db:
         condition: service_healthy
@@ -58,3 +70,14 @@ networks:
   default:
     name: homelab
     external: true
+
+volumes:
+  sparkyfitness-postgresql:
+    external: true
+    name: sparkyfitness_postgresql
+  sparkyfitness-backup:
+    external: true
+    name: sparkyfitness_backup
+  sparkyfitness-uploads:
+    external: true
+    name: sparkyfitness_uploads

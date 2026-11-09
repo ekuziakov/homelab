@@ -3,7 +3,11 @@ services:
     image: nousresearch/hermes-agent:latest
     restart: unless-stopped
     volumes:
-      - ./data:/opt/data
+      - type: volume
+        source: hermes-data
+        target: /opt/data
+        volume:
+          nocopy: true
       - type: bind
         source: /Volumes/SSD1/homelab
         target: /mounts/homelab
@@ -26,3 +30,8 @@ networks:
   default:
     name: homelab
     external: true
+
+volumes:
+  hermes-data:
+    external: true
+    name: hermes_data

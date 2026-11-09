@@ -4,7 +4,11 @@ services:
     restart: unless-stopped
     volumes:
       - ./mosquitto/config:/mosquitto/config
-      - ./mosquitto/data:/mosquitto/data
+      - type: volume
+        source: mosquitto-data
+        target: /mosquitto/data
+        volume:
+          nocopy: true
     ports:
       - "1883:1883"
 
@@ -12,7 +16,11 @@ services:
     image: ghcr.io/koenkk/zigbee2mqtt
     restart: unless-stopped
     volumes:
-      - ./zigbee2mqtt/data:/app/data
+      - type: volume
+        source: zigbee2mqtt-data
+        target: /app/data
+        volume:
+          nocopy: true
     ports:
       - 8080:8080
     environment:
@@ -27,3 +35,11 @@ networks:
   default:
     name: homelab
     external: true
+
+volumes:
+  mosquitto-data:
+    external: true
+    name: mosquitto_data
+  zigbee2mqtt-data:
+    external: true
+    name: zigbee2mqtt_data

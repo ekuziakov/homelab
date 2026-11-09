@@ -9,6 +9,9 @@ Keep the existing `.env`. On a fresh clone, copy `.env.example` to `.env`,
 set `HINDSIGHT_API_KEY` using `openssl rand -hex 32`, and run `chmod 600 .env`.
 The default `chatgpt` provider uses OAuth; it does not need an LLM API key.
 
+The external volume `hindsight_hindsight-data` must exist. For a new installation
+only, create it with `docker volume create hindsight_hindsight-data`.
+
 ```bash
 cd /Volumes/SSD1/homelab/hindsight
 docker compose run --rm --service-ports hindsight-login
@@ -26,10 +29,11 @@ docker compose exec hindsight hindsight-admin chatgpt status
 - API: http://127.0.0.1:8888 (Bearer `HINDSIGHT_API_KEY`).
 - UI: http://127.0.0.1:9999 (no separate UI login; keep it local).
 - Data and OAuth: `hindsight_hindsight-data` at `/home/hindsight/.pg0`.
-  The volume name changes with the Compose project name.
+  The volume name is fixed, independent of the Compose project name.
 
 Back up the volume separately using a consistent PostgreSQL backup. Treat it
-and `.env` as secrets. `docker compose down -v` deletes the database and OAuth.
+and `.env` as secrets. `docker compose down -v` does not remove this external
+volume; deleting it manually destroys the database and OAuth credentials.
 Memory processing sends content to the configured LLM provider.
 
 ## Hermes

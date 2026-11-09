@@ -72,3 +72,5 @@ networks:
 
 volumes:
   hindsight-data:
+    external: true
+    name: hindsight_hindsight-data

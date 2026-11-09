@@ -9,7 +9,11 @@ services:
       BASE_URL: http://localhost:4096
       APP_SECRET: ${APP_SECRET:?Set APP_SECRET in zerobyte/.env}
     volumes:
-      - ./data:/var/lib/zerobyte
+      - type: volume
+        source: zerobyte-data
+        target: /var/lib/zerobyte
+        volume:
+          nocopy: true
       - type: bind
         source: /Volumes/SSD1/homelab
         target: /sources/homelab
@@ -29,6 +33,9 @@ services:
           create_host_path: false
 
 volumes:
+  zerobyte-data:
+    external: true
+    name: zerobyte_data
   hindsight-data:
     external: true
     name: ${HINDSIGHT_VOLUME_NAME:-hindsight_hindsight-data}
