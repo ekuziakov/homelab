@@ -1,8 +1,10 @@
 # Zigbee2MQTT on OrbStack
 
-After quitting and reopening OrbStack, the Sonoff USB coordinator needs to be attached again. This script opens OrbStack, waits for Docker, attaches the coordinator if needed, and starts Mosquitto and Zigbee2MQTT. It runs once and exits—no background agent required.
+Reattach the Sonoff USB coordinator after restarting OrbStack. Requires Docker
+Compose, the external `homelab` network, and one adapter with VID:PID `10c4:ea60`.
 
-## Startup script
+Run this script on the Mac, or paste it into an Apple Shortcuts **Run Shell
+Script** action using `/bin/bash` without administrator privileges:
 
 ```bash
 #!/bin/bash
@@ -29,26 +31,6 @@ cd /Volumes/SSD1/homelab/zigbee2mqtt
 docker compose up -d zigbee2mqtt
 ```
 
-Adjust the `cd` path to your Compose directory. OrbStack CLI, Docker Compose, existing images, and the external `homelab` Docker network must already be available. The script expects one Sonoff adapter with USB VID:PID `10c4:ea60`; its current device ID is discovered each time.
-
-## Run from Terminal
-
-Save the script as `start-orbstack.sh`, then run:
-
-```bash
-bash start-orbstack.sh
-```
-
-No `sudo` or executable permission is needed when invoking it with Bash.
-
-## Run with Apple Shortcuts
-
-1. Create a shortcut named **Start Homelab**.
-2. Add the **Run Shell Script** action and select `/bin/bash` as the shell.
-3. Paste the script above directly into the action. Do not enable administrator privileges.
-4. Optionally add **Show Result** to display the shell action's output.
-5. Add the shortcut to the Dock or menu bar, or assign a keyboard shortcut.
-
-Launch OrbStack through this shortcut. Opening OrbStack normally does not run the script. Allow access to the external disk or script execution if macOS requests it.
-
-The script does not recreate existing containers, build images, or pull images. It uses a simple two-second pause after Attach rather than checking device readiness; if startup fails because the device is not ready yet, run it again. It does not check application health or impose timeouts on individual commands.
+If saved as `start-orbstack.sh`, run `bash start-orbstack.sh`. Opening OrbStack
+normally does not run it. The script waits two seconds after USB attachment;
+retry if the device is not ready. It does not check application health.

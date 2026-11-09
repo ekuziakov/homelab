@@ -1,0 +1,39 @@
+services:
+  zerobyte:
+    image: ghcr.io/nicotsx/zerobyte:v0.44
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4096:4096"
+    environment:
+      TZ: Europe/Moscow
+      BASE_URL: http://localhost:4096
+      APP_SECRET: ${APP_SECRET:?Set APP_SECRET in zerobyte/.env}
+    volumes:
+      - ./data:/var/lib/zerobyte
+      - type: bind
+        source: /Volumes/SSD1/homelab
+        target: /sources/homelab
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: volume
+        source: hindsight-data
+        target: /sources/hindsight
+        read_only: true
+        volume:
+          nocopy: true
+      - type: bind
+        source: /Volumes/SSD1/backups/zerobyte
+        target: /repositories
+        bind:
+          create_host_path: false
+
+volumes:
+  hindsight-data:
+    external: true
+    name: ${HINDSIGHT_VOLUME_NAME:-hindsight_hindsight-data}
+
+networks:
+  default:
+    name: homelab
+    external: true
