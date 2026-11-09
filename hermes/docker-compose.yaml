@@ -9,6 +9,18 @@ services:
         volume:
           nocopy: true
       - type: bind
+        source: ./data/config.yaml
+        target: /opt/data/config.yaml
+        read_only: false
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./data/.env.example
+        target: /opt/data/.env.example
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
         source: /Volumes/SSD1/homelab
         target: /mounts/homelab
         read_only: false

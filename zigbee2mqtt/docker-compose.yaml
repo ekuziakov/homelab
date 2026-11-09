@@ -21,6 +21,12 @@ services:
         target: /app/data
         volume:
           nocopy: true
+      - type: bind
+        source: ./zigbee2mqtt/data/configuration.yaml
+        target: /app/data/configuration.yaml
+        read_only: false
+        bind:
+          create_host_path: false
     ports:
       - 8080:8080
     environment:

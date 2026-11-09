@@ -8,6 +8,12 @@ services:
         target: /config
         volume:
           nocopy: true
+      - type: bind
+        source: ./config/configuration.yaml
+        target: /config/configuration.yaml
+        read_only: true
+        bind:
+          create_host_path: false
     ports:
       - "8123:8123"
     environment:
