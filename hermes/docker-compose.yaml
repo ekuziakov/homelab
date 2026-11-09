@@ -17,7 +17,7 @@ services:
       TZ: Europe/Moscow
       HTTP_PROXY: http://host.docker.internal:7897
       HTTPS_PROXY: http://host.docker.internal:7897
-      NO_PROXY: localhost,127.0.0.1,::1,sparkyfitness-sparkyfitness-frontend-1,floppy-floppy-mcp-1
+      NO_PROXY: localhost,127.0.0.1,::1,sparkyfitness-sparkyfitness-frontend-1,floppy-floppy-mcp-1,hindsight-hindsight-1
       HERMES_WRITE_SAFE_ROOT: /opt/data:/mounts/homelab
     command: gateway run
 
