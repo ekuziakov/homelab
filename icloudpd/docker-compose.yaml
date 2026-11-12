@@ -1,0 +1,41 @@
+services:
+  icloudpd:
+    image: icloudpd/icloudpd:latest
+    command:
+      - icloudpd
+      - --directory
+      - /data
+      - --cookie-directory
+      - /config/cookies
+      - --folder-structure
+      - none
+      - --skip-live-photos
+      - --keep-icloud-recent-days
+      - "30"
+      - --username
+      - "${ICLOUD_USERNAME:?Set ICLOUD_USERNAME in .env}"
+    environment:
+      TZ: "Europe/Moscow"
+    volumes:
+      - type: volume
+        source: config
+        target: /config
+        volume:
+          nocopy: true
+      - type: bind
+        source: /Volumes/SSD1/photos/icloud
+        target: /data
+        bind:
+          create_host_path: false
+    stdin_open: true
+    tty: true
+
+volumes:
+  config:
+    name: icloudpd_config
+    external: true
+
+networks:
+  default:
+    name: homelab
+    external: true
