@@ -4,7 +4,7 @@ services:
     restart: unless-stopped
     environment:
       TZ: "Europe/Moscow"
-      BASE_URL: "http://localhost:4096"
+      BASE_URL: "https://zerobyte.home.hexmelt.com"
       APP_SECRET: "${APP_SECRET:?Set APP_SECRET in zerobyte/.env}"
     ports:
       - "127.0.0.1:4096:4096"
@@ -14,31 +14,214 @@ services:
         target: /var/lib/zerobyte
         volume:
           nocopy: true
-      - type: bind
-        source: /Volumes/SSD1/homelab
-        target: /sources/homelab
+      - type: volume
+        source: actual-budget-data
+        target: /sources/volumes/actual_budget_data
         read_only: true
-        bind:
-          create_host_path: false
+        volume:
+          nocopy: true
+      - type: volume
+        source: caddy-config
+        target: /sources/volumes/caddy_config
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: caddy-data
+        target: /sources/volumes/caddy_data
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: floppy-backups
+        target: /sources/volumes/floppy_backups
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: floppy-db
+        target: /sources/volumes/floppy_db
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: floppy-redis
+        target: /sources/volumes/floppy_redis
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: hermes-data
+        target: /sources/volumes/hermes_data
+        read_only: true
+        volume:
+          nocopy: true
       - type: volume
         source: hindsight-data
-        target: /sources/hindsight
+        target: /sources/volumes/hindsight_hindsight-data
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: home-assistant-config
+        target: /sources/volumes/home_assistant_config
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: immich-library-data
+        target: /sources/volumes/immich_library_data
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: immich-postgres-data
+        target: /sources/volumes/immich_postgres_data
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: mosquitto-data
+        target: /sources/volumes/mosquitto_data
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: sparkyfitness-backup
+        target: /sources/volumes/sparkyfitness_backup
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: sparkyfitness-postgresql
+        target: /sources/volumes/sparkyfitness_postgresql
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: sparkyfitness-uploads
+        target: /sources/volumes/sparkyfitness_uploads
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: zerobyte-data
+        target: /sources/volumes/zerobyte_data
+        read_only: true
+        volume:
+          nocopy: true
+      - type: volume
+        source: zigbee2mqtt-data
+        target: /sources/volumes/zigbee2mqtt_data
         read_only: true
         volume:
           nocopy: true
       - type: bind
-        source: /Volumes/SSD1/backups/zerobyte
+        source: /Volumes/SSD1/books
+        target: /sources/ssd/books
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /Volumes/SSD1/courses
+        target: /sources/ssd/courses
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /Volumes/SSD1/docs
+        target: /sources/ssd/docs
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /Volumes/SSD1/homelab
+        target: /sources/ssd/homelab
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /Volumes/SSD1/music
+        target: /sources/ssd/music
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /Volumes/SSD1/photos
+        target: /sources/ssd/photos
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /Volumes/SSD1/projects
+        target: /sources/ssd/projects
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /Volumes/SSD1/videos
+        target: /sources/ssd/videos
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /Volumes/Backup01
         target: /repositories
+        read_only: false
         bind:
           create_host_path: false
 
 volumes:
+  actual-budget-data:
+    name: actual_budget_data
+    external: true
+  caddy-config:
+    name: caddy_config
+    external: true
+  caddy-data:
+    name: caddy_data
+    external: true
+  floppy-backups:
+    name: floppy_backups
+    external: true
+  floppy-db:
+    name: floppy_db
+    external: true
+  floppy-redis:
+    name: floppy_redis
+    external: true
+  hermes-data:
+    name: hermes_data
+    external: true
+  hindsight-data:
+    name: hindsight_hindsight-data
+    external: true
+  home-assistant-config:
+    name: home_assistant_config
+    external: true
+  immich-library-data:
+    name: immich_library_data
+    external: true
+  immich-postgres-data:
+    name: immich_postgres_data
+    external: true
+  mosquitto-data:
+    name: mosquitto_data
+    external: true
+  sparkyfitness-backup:
+    name: sparkyfitness_backup
+    external: true
+  sparkyfitness-postgresql:
+    name: sparkyfitness_postgresql
+    external: true
+  sparkyfitness-uploads:
+    name: sparkyfitness_uploads
+    external: true
   zerobyte-data:
     name: zerobyte_data
     external: true
-  hindsight-data:
-    name: ${HINDSIGHT_VOLUME_NAME:-hindsight_hindsight-data}
-
+  zigbee2mqtt-data:
+    name: zigbee2mqtt_data
     external: true
 
 networks:

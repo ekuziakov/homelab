@@ -11,7 +11,7 @@ services:
       TZ: "Europe/Moscow"
       HTTP_PROXY: "http://host.docker.internal:7897"
       HTTPS_PROXY: "http://host.docker.internal:7897"
-      NO_PROXY: "localhost,127.0.0.1,::1,sparkyfitness-sparkyfitness-frontend-1,floppy-floppy-mcp-1,hindsight-hindsight-1"
+      NO_PROXY: "localhost,127.0.0.1,::1,sparkyfitness-sparkyfitness-frontend-1,floppy-floppy-mcp-1,hindsight-hindsight-1,prowlarr-prowlarr-1"
       HERMES_WRITE_SAFE_ROOT: "/opt/data:/mounts/homelab"
     ports:
       - "9119:9119"   # dashboard
@@ -24,6 +24,12 @@ services:
       - type: bind
         source: ./data/config.yaml
         target: /opt/data/config.yaml
+        read_only: false
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./data/.env
+        target: /opt/data/.env
         read_only: false
         bind:
           create_host_path: false

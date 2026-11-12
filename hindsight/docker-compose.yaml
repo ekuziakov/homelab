@@ -19,7 +19,7 @@ services:
       HINDSIGHT_CP_DATAPLANE_API_KEY: "${HINDSIGHT_API_KEY:?Set HINDSIGHT_API_KEY in hindsight/.env}"
     ports:
       - "127.0.0.1:8888:8888"   # API; Hermes uses hindsight:8888 over homelab
-      - "127.0.0.1:9999:9999"   # web UI (no public reverse proxy)
+      - "127.0.0.1:9999:9999"   # local UI port; HTTPS via Caddy
     volumes:
       # Named volume avoids UID 1000 bind-mount permission issues on macOS.
       - type: volume

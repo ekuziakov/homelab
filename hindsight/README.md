@@ -1,7 +1,7 @@
 # Hindsight
 
-Memory service with embedded PostgreSQL. Local API: `http://127.0.0.1:8888`;
-web UI: `http://127.0.0.1:9999`.
+Memory service with embedded PostgreSQL. Web UI: `https://hindsight.home.hexmelt.com`.
+Local API: `http://127.0.0.1:8888`.
 
 ## Run
 
@@ -19,7 +19,7 @@ For normal startup, run only the second command.
 
 The API requires a Bearer `HINDSIGHT_API_KEY`. Hermes uses
 `http://hindsight-hindsight-1:8888` with the same key; keep this hostname in
-Hermes `NO_PROXY`. Keep the web UI local.
+Hermes `NO_PROXY`. The UI has no separate login; access to Caddy must stay restricted.
 
 ## Storage
 
