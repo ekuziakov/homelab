@@ -1,0 +1,40 @@
+services:
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    restart: unless-stopped
+    environment:
+      PUID: "${PUID:?Set PUID in .env}"
+      PGID: "${PGID:?Set PGID in .env}"
+      TZ: "Europe/Moscow"
+      UMASK: "002"
+      HTTP_PROXY: "http://host.docker.internal:7897"
+      HTTPS_PROXY: "http://host.docker.internal:7897"
+      NO_PROXY: "localhost,127.0.0.1,::1,transmission,transmission-transmission-1,prowlarr,prowlarr-prowlarr-1,lidarr,lidarr-lidarr-1"
+    ports:
+      - "8686:8686"
+    volumes:
+      - type: volume
+        source: config
+        target: /config
+        volume:
+          nocopy: true
+      - type: bind
+        source: /Volumes/SSD1/downloads
+        target: /downloads
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /Volumes/SSD1/music
+        target: /music
+        bind:
+          create_host_path: false
+
+volumes:
+  config:
+    name: lidarr_config
+    external: true
+
+networks:
+  default:
+    name: homelab
+    external: true

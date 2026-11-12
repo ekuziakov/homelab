@@ -1,0 +1,38 @@
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    restart: unless-stopped
+    environment:
+      PUID: "${PUID:?Set PUID in .env}"
+      PGID: "${PGID:?Set PGID in .env}"
+      TZ: "Europe/Moscow"
+      UMASK: "002"
+      USER: "${TRANSMISSION_USER:?Set TRANSMISSION_USER in .env}"
+      PASS: "${TRANSMISSION_PASS:?Set TRANSMISSION_PASS in .env}"
+      PEERPORT: "51413"
+      HOST_WHITELIST: "transmission.home.hexmelt.com,transmission,localhost"
+    ports:
+      - "9091:9091"
+      - "51413:51413"
+      - "51413:51413/udp"
+    volumes:
+      - type: volume
+        source: config
+        target: /config
+        volume:
+          nocopy: true
+      - type: bind
+        source: /Volumes/SSD1/downloads
+        target: /downloads
+        bind:
+          create_host_path: false
+
+volumes:
+  config:
+    name: transmission_config
+    external: true
+
+networks:
+  default:
+    name: homelab
+    external: true

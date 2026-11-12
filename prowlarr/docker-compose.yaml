@@ -1,0 +1,29 @@
+services:
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    restart: unless-stopped
+    environment:
+      PUID: "${PUID:?Set PUID in .env}"
+      PGID: "${PGID:?Set PGID in .env}"
+      TZ: "Europe/Moscow"
+      HTTP_PROXY: "http://host.docker.internal:7897"
+      HTTPS_PROXY: "http://host.docker.internal:7897"
+      NO_PROXY: "localhost,127.0.0.1,::1,transmission,transmission-transmission-1,prowlarr,prowlarr-prowlarr-1,lidarr,lidarr-lidarr-1,flaresolverr,flaresolverr-flaresolverr-1"
+    ports:
+      - "9696:9696"
+    volumes:
+      - type: volume
+        source: config
+        target: /config
+        volume:
+          nocopy: true
+
+volumes:
+  config:
+    name: prowlarr_config
+    external: true
+
+networks:
+  default:
+    name: homelab
+    external: true

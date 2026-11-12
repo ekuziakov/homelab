@@ -39,3 +39,28 @@ immich.home.hexmelt.com {
     import cloudflare
     reverse_proxy immich-immich-server-1:2283
 }
+
+zerobyte.home.hexmelt.com {
+    import cloudflare
+    reverse_proxy zerobyte-zerobyte-1:4096
+}
+
+hindsight.home.hexmelt.com {
+    import cloudflare
+    reverse_proxy hindsight-hindsight-1:9999
+}
+
+transmission.home.hexmelt.com {
+    import cloudflare
+    reverse_proxy transmission-transmission-1:9091
+}
+
+lidarr.home.hexmelt.com {
+    import cloudflare
+    reverse_proxy lidarr-lidarr-1:8686
+}
+
+prowlarr.home.hexmelt.com {
+    import cloudflare
+    reverse_proxy prowlarr-prowlarr-1:9696
+}
