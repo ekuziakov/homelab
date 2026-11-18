@@ -12,7 +12,7 @@ services:
       HTTP_PROXY: "http://host.docker.internal:7897"
       HTTPS_PROXY: "http://host.docker.internal:7897"
       NO_PROXY: "localhost,127.0.0.1,::1,sparkyfitness-sparkyfitness-frontend-1,floppy-floppy-mcp-1,hindsight-hindsight-1,prowlarr-prowlarr-1"
-      HERMES_WRITE_SAFE_ROOT: "/opt/data:/mounts/homelab"
+      HERMES_WRITE_SAFE_ROOT: "/opt/data:/mounts/homelab:/mounts/shared"
     ports:
       - "9119:9119"   # dashboard
     volumes:
@@ -43,6 +43,12 @@ services:
         source: /Volumes/SSD1/homelab
         target: /mounts/homelab
         read_only: false
+      - type: bind
+        source: ./shared
+        target: /mounts/shared
+        read_only: false
+        bind:
+          create_host_path: false
 
 volumes:
   hermes-data:
